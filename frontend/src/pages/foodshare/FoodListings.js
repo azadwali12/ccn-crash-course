@@ -152,7 +152,7 @@ const FoodListings = () => {
                                 <div style={styles.orderedMsg}>✅ Order Placed! Pickup details sent.</div>
                             ) : (
                                 <button style={styles.orderBtn} onClick={() => handleOrder(item.id)}>
-                                    Reserve &amp; Order
+                                    Reserve & Order
                                 </button>
                             )}
                         </div>
