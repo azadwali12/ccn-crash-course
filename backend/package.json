@@ -1,1 +1,14 @@
-{\n  "name": "backend",\n  "version": "1.0.0",\n  "description": "Backend setup for CCN Crash Course",\n  "main": "server.js",\n  "scripts": {\n    "start": "node server.js"\n  },\n  "dependencies": {\n    "express": "^4.17.1",\n    "pg": "^8.7.1"\n  }\n}
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend setup for CCN Crash Course",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "pg": "^8.7.1"
+  }
+}
