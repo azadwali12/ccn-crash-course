@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import './App.css';
+import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import CoursesPage from './pages/CoursesPage';
 import CourseDetailsPage from './pages/CourseDetailsPage';
@@ -10,6 +11,37 @@ import EnrollmentsPage from './pages/EnrollmentsPage';
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const stored =
+      localStorage.getItem('ccn_user') || sessionStorage.getItem('ccn_user');
+    if (stored) {
+      try {
+        setUser(JSON.parse(stored));
+      } catch {
+        localStorage.removeItem('ccn_user');
+        sessionStorage.removeItem('ccn_user');
+      }
+    }
+  }, []);
+
+  const handleLogin = (userData) => {
+    setUser(userData);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('ccn_user');
+    sessionStorage.removeItem('ccn_user');
+    setUser(null);
+    setUserMenuOpen(false);
+    setMenuOpen(false);
+  };
+
+  if (!user) {
+    return <LoginPage onLogin={handleLogin} />;
+  }
 
   return (
     <Router>
@@ -55,16 +87,43 @@ function App() {
               </NavLink>
             </li>
           </ul>
+          <div className="navbar-user">
+            <button
+              className="navbar-user-btn"
+              onClick={() => setUserMenuOpen(!userMenuOpen)}
+              aria-label="User menu"
+            >
+              <div className="navbar-avatar">
+                {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+              </div>
+              <span className="navbar-user-name">{user.name || 'User'}</span>
+              <span className="navbar-user-caret">{userMenuOpen ? '▴' : '▾'}</span>
+            </button>
+            {userMenuOpen && (
+              <div className="navbar-user-menu">
+                <div className="navbar-user-info">
+                  <div className="navbar-user-info-name">{user.name || 'User'}</div>
+                  <div className="navbar-user-info-email">{user.email}</div>
+                  <span className="navbar-user-role">{user.role || 'student'}</span>
+                </div>
+                <div className="navbar-user-menu-divider"></div>
+                <button className="navbar-user-menu-item navbar-logout" onClick={handleLogout}>
+                  🚪 Sign Out
+                </button>
+              </div>
+            )}
+          </div>
         </nav>
 
         <main className="main-content">
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<HomePage user={user} />} />
             <Route path="/courses" element={<CoursesPage />} />
             <Route path="/courses/:id" element={<CourseDetailsPage />} />
             <Route path="/lessons" element={<LessonsPage />} />
             <Route path="/assignments" element={<AssignmentsPage />} />
             <Route path="/enrollments" element={<EnrollmentsPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
 
