@@ -1,11 +1,24 @@
 const express = require('express');
 const cors = require('cors');
+const crypto = require('crypto');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+
+// Timing-safe string comparison to prevent timing attacks
+function safeEqual(a, b) {
+  const bufA = Buffer.from(String(a));
+  const bufB = Buffer.from(String(b));
+  if (bufA.length !== bufB.length) {
+    // Still run timingSafeEqual on equal-length buffers to avoid branching leak
+    crypto.timingSafeEqual(bufA, bufA);
+    return false;
+  }
+  return crypto.timingSafeEqual(bufA, bufB);
+}
 
 // Sample data
 const courses = [
@@ -50,7 +63,26 @@ const enrollments = [
   { id: 6, studentName: 'Nadia Raza', email: 'nadia@example.com', courseId: 5, courseName: 'Cloud Networking', enrolledAt: '2025-01-22', status: 'pending' },
 ];
 
+// Mock users for authentication
+const users = [
+  { id: 1, name: 'Admin User', email: 'admin@ccn.edu', password: 'admin123', role: 'admin' },
+  { id: 2, name: 'Student User', email: 'student@ccn.edu', password: 'student123', role: 'student' },
+];
+
 // Routes
+app.post('/api/login', (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required.' });
+  }
+  const user = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+  if (!user || !safeEqual(password, user.password)) {
+    return res.status(401).json({ error: 'Invalid email or password.' });
+  }
+  const { password: _pw, ...safeUser } = user;
+  res.json({ user: safeUser });
+});
+
 app.get('/api/courses', (req, res) => {
   res.json(courses);
 });

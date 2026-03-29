@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
 
-const HomePage = () => {
+const HomePage = ({ user }) => {
   const [stats, setStats] = useState({ courses: 0, lessons: 0, assignments: 0, enrollments: 0 });
   const [recentCourses, setRecentCourses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +50,7 @@ const HomePage = () => {
   return (
     <div className="page-container">
       <div className="hero">
-        <h1>Welcome to CCN Crash Course</h1>
+        <h1>Welcome back{user && user.name ? `, ${user.name.split(' ')[0]}` : ''}! 👋</h1>
         <p>
           Master computer networking from fundamentals to advanced concepts with our
           expertly crafted curriculum, hands-on labs, and real-world simulations.
