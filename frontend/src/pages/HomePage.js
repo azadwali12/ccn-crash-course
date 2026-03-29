@@ -89,10 +89,11 @@ const HomePage = () => {
   return (
     <div className="page-container">
       <div className="hero">
-        <div className="hero-greeting">
-          👋 Welcome back, <strong>{user?.name || 'Learner'}</strong>
+        <div className="hero-badge">
+          <span className="hero-badge-dot"></span>
+          👋 Welcome back, {user?.name || 'Learner'}
         </div>
-        <h1>Master Computer<br />Networking</h1>
+        <h1>Master <span className="gradient-text">Computer<br />Networking</span></h1>
         <p>
           From fundamentals to advanced concepts — expertly crafted curriculum,
           hands-on labs, and real-world simulations to accelerate your career.
@@ -105,8 +106,8 @@ const HomePage = () => {
           ))}
         </div>
         <div className="hero-actions">
-          <Link to="/courses" className="btn btn-primary">Explore Courses →</Link>
-          <Link to="/enrollments" className="btn btn-outline">Enroll Now</Link>
+          <Link to="/courses" className="btn btn-primary btn-lg">Explore Courses →</Link>
+          <Link to="/enrollments" className="btn btn-outline btn-lg">Enroll Now</Link>
         </div>
       </div>
 
